@@ -12,6 +12,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class ApiPassengerApplication {
 
+    //测试提交
     public static void main(String[] args) {
         SpringApplication.run(ApiPassengerApplication.class,args);
     }
