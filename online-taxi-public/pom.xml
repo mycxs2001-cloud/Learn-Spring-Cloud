@@ -16,6 +16,8 @@
   <packaging>pom</packaging>
     <modules>
         <module>api-passenger</module>
+        <module>service-verifioncode</module>
+
     </modules>
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
