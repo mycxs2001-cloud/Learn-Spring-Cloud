@@ -11,6 +11,8 @@ import lombok.Getter;
  */
 public enum CommonStatusEnum {
 
+VERIFICATION_ERROR(1099,"验证码不正确"),
+
     /**
      * 成功
      */

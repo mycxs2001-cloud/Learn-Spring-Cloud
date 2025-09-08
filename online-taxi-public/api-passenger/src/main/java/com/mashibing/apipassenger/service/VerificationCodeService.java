@@ -1,7 +1,9 @@
 package com.mashibing.apipassenger.service;
 
+import com.alibaba.cloud.commons.lang.StringUtils;
 import com.mashibing.apipassenger.remote.ServiceVerificationCodeClient;
 import net.sf.json.JSONObject;
+import org.mashibing.internalcommon.constant.CommonStatusEnum;
 import org.mashibing.internalcommon.dto.ResponseResult;
 import org.mashibing.internalcommon.response.NumberCodeResponse;
 import org.mashibing.internalcommon.response.TokenResponse;
@@ -39,7 +41,7 @@ public class VerificationCodeService {
 
         //存入redis
         System.out.println("存入redis");
-        String key = verificationCodePrefix + numberCode;
+        String key = passengerKeyByPhone(passengerPhone);
 
         //存入redis
         stringRedisTemplate.opsForValue().set(key,numberCode+"",2, TimeUnit.MINUTES);
@@ -53,7 +55,22 @@ public class VerificationCodeService {
     public ResponseResult checkCode(String passengerPhone,String verificationCode){
 
 
+
         System.out.println("根据手机号、去redis获取验证码");
+
+        //生成redis Key
+        String key = passengerKeyByPhone(passengerPhone);
+
+        String redisKey = stringRedisTemplate.opsForValue().get(key);
+
+        System.out.println("redis 中的 value :"+redisKey);
+
+        if (StringUtils.isBlank( redisKey)) {
+            return ResponseResult.fail(CommonStatusEnum.VERIFICATION_ERROR.getCode(), CommonStatusEnum.VERIFICATION_ERROR.getValue(),redisKey);
+        }
+        if (!verificationCode.trim().equals(redisKey.trim())) {
+            return ResponseResult.fail(CommonStatusEnum.VERIFICATION_ERROR.getCode(), CommonStatusEnum.VERIFICATION_ERROR.getValue(),redisKey);
+        }
         System.out.println("校验验证码");
         System.out.println("判断原来是否有用户");
         System.out.println("颁发令牌");
@@ -62,6 +79,16 @@ public class VerificationCodeService {
         TokenResponse tokenResponse=new TokenResponse();
         tokenResponse.setToken("Token Value");
         return ResponseResult.success(tokenResponse);
+
+    }
+
+    /**
+     * 根据手机生成 key
+     * @param passengerPhone
+     * @return
+     */
+    public String passengerKeyByPhone(String passengerPhone){
+        return  verificationCodePrefix+passengerPhone;
     }
 
 }
