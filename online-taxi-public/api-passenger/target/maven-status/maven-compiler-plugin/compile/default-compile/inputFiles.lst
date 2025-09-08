@@ -1,5 +1,6 @@
 H:\cworkLay\online-taxi-public\api-passenger\src\main\java\com\mashibing\apipassenger\ApiPassengerApplication.java
 H:\cworkLay\online-taxi-public\api-passenger\src\main\java\com\mashibing\apipassenger\controller\VerificationCodeController.java
+H:\cworkLay\online-taxi-public\api-passenger\src\main\java\com\mashibing\apipassenger\remote\ServiceVerificationCodeClient.java
 H:\cworkLay\online-taxi-public\api-passenger\src\main\java\com\mashibing\apipassenger\controller\TestController.java
 H:\cworkLay\online-taxi-public\api-passenger\src\main\java\com\mashibing\apipassenger\request\VerificationCodeDTO.java
 H:\cworkLay\online-taxi-public\api-passenger\src\main\java\com\mashibing\apipassenger\service\VerificationCodeService.java

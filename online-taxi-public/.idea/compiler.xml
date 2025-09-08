@@ -8,6 +8,7 @@
         <outputRelativeToContentRoot value="true" />
         <module name="api-passenger" />
         <module name="service-verifioncode" />
+        <module name="internal-common" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
@@ -17,6 +18,7 @@
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="api-passenger" options="-parameters" />
+      <module name="internal-common" options="-parameters" />
       <module name="service-verifioncode" options="-parameters" />
     </option>
   </component>

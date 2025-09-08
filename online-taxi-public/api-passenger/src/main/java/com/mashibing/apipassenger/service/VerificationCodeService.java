@@ -1,6 +1,10 @@
 package com.mashibing.apipassenger.service;
 
+import com.mashibing.apipassenger.remote.ServiceVerificationCodeClient;
 import net.sf.json.JSONObject;
+import org.mashibing.internalcommon.dto.ResponseResult;
+import org.mashibing.internalcommon.response.NumberCodeResponse;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
@@ -12,21 +16,28 @@ import org.springframework.stereotype.Service;
 @Service
 public class VerificationCodeService {
 
- public String generatorCode(String passengerPhone){
 
-  //调用短信服务,获取验证码
-  System.out.println("调用验证码服务,获取验证码 ");
-  String code = "123456";
+    @Autowired
+    private ServiceVerificationCodeClient serviceVerificationCodeClient;
 
-  //存入redis
-  System.out.println("存入redis");
+    public String generatorCode(String passengerPhone) {
+    //调用短信服务,获取验证码
+    System.out.println("调用验证码服务,获取验证码 ");
+    ResponseResult<NumberCodeResponse> numberCodeResponse = serviceVerificationCodeClient.getNumberCode(6);
+     int numberCode = numberCodeResponse.getData().getNumberCode();
+     System.out.println("remote number code : "+numberCode);
 
-  //返回值
+        //存入redis
+        System.out.println("存入redis");
 
-  JSONObject rv=new JSONObject();
-  rv.put("code","1");
-  rv.put("message","success");
-  return rv.toString();
- };
+        //返回值
+
+        JSONObject rv = new JSONObject();
+        rv.put("code", "1");
+        rv.put("message", "success");
+        return rv.toString();
+    }
+
+    ;
 
 }
