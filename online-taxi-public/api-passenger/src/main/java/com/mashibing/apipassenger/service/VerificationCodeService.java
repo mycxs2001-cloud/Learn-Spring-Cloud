@@ -4,6 +4,7 @@ import com.mashibing.apipassenger.remote.ServiceVerificationCodeClient;
 import net.sf.json.JSONObject;
 import org.mashibing.internalcommon.dto.ResponseResult;
 import org.mashibing.internalcommon.response.NumberCodeResponse;
+import org.mashibing.internalcommon.response.TokenResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
@@ -28,6 +29,7 @@ public class VerificationCodeService {
 
     private String verificationCodePrefix = "passenger-verification-code-";
 
+    //获取验证码
     public ResponseResult generatorCode(String passengerPhone) {
         //调用短信服务,获取验证码
         System.out.println("调用验证码服务,获取验证码 :"+passengerPhone);
@@ -47,6 +49,19 @@ public class VerificationCodeService {
         return ResponseResult.success("");
     }
 
-    ;
+    //验证验证码是否有效
+    public ResponseResult checkCode(String passengerPhone,String verificationCode){
+
+
+        System.out.println("根据手机号、去redis获取验证码");
+        System.out.println("校验验证码");
+        System.out.println("判断原来是否有用户");
+        System.out.println("颁发令牌");
+
+        //响应token
+        TokenResponse tokenResponse=new TokenResponse();
+        tokenResponse.setToken("Token Value");
+        return ResponseResult.success(tokenResponse);
+    }
 
 }
