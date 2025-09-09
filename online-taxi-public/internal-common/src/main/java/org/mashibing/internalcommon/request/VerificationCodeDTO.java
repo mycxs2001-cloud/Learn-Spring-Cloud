@@ -1,4 +1,4 @@
-package com.mashibing.apipassenger.request;
+package org.mashibing.internalcommon.request;
 
 import lombok.Data;
 
