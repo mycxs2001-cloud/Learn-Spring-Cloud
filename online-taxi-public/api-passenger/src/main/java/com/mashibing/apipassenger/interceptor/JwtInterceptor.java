@@ -5,6 +5,7 @@ import com.auth0.jwt.exceptions.AlgorithmMismatchException;
 import com.auth0.jwt.exceptions.SignatureVerificationException;
 import com.auth0.jwt.exceptions.TokenExpiredException;
 import net.sf.json.JSONObject;
+import org.mashibing.internalcommon.constant.TokenConstant;
 import org.mashibing.internalcommon.dto.ResponseResult;
 import org.mashibing.internalcommon.dto.TokenResult;
 import org.mashibing.internalcommon.util.JwtUtil;
@@ -79,7 +80,7 @@ public class JwtInterceptor implements HandlerInterceptor {
             tokenResult = JwtUtil.parseToken(token); // 你的解析方法，注意用 asString() 取 claim
             String phone = tokenResult.getPhone();
             String identity = tokenResult.getIdentity();
-            String tokenKey = RedisPrefixUtils.generatorTokenKey(phone, identity);
+            String tokenKey = RedisPrefixUtils.generatorTokenKey(phone, identity, TokenConstant.ACCESS_TOKEN_TYPE);
             String tokenRedis = stringRedisTemplate.opsForValue().get(tokenKey);
             if (StringUtils.isBlank(tokenRedis)) {//判断是否为空
                 writeJson(response, 401, ResponseResult.fail("token error"));
