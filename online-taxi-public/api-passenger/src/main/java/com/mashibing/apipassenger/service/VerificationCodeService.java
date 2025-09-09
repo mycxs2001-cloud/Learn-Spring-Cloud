@@ -11,11 +11,13 @@ import org.mashibing.internalcommon.request.VerificationCodeDTO;
 import org.mashibing.internalcommon.response.NumberCodeResponse;
 import org.mashibing.internalcommon.response.TokenResponse;
 import org.mashibing.internalcommon.util.JwtUtil;
+import org.mashibing.internalcommon.util.RedisPrefixUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.concurrent.TimeUnit;
+
 
 /**
  * @version: java version 1.8
@@ -36,7 +38,7 @@ public class VerificationCodeService {
     @Autowired
     private StringRedisTemplate stringRedisTemplate;
 
-    private String verificationCodePrefix = "passenger-verification-code-";
+
 
     //获取验证码
     public ResponseResult generatorCode(String passengerPhone) {
@@ -48,7 +50,7 @@ public class VerificationCodeService {
 
         //存入redis
         System.out.println("存入redis");
-        String key = passengerKeyByPhone(passengerPhone);
+        String key = RedisPrefixUtils.passengerKeyByPhone(passengerPhone);
 
         //存入redis
         stringRedisTemplate.opsForValue().set(key,numberCode+"",2, TimeUnit.MINUTES);
@@ -66,7 +68,7 @@ public class VerificationCodeService {
         System.out.println("根据手机号、去redis获取验证码");
 
         //生成redis Key
-        String key = passengerKeyByPhone(passengerPhone);
+        String key = RedisPrefixUtils.passengerKeyByPhone(passengerPhone);
 
         String redisKey = stringRedisTemplate.opsForValue().get(key);
 
@@ -86,6 +88,9 @@ public class VerificationCodeService {
 
        //"颁发令牌" identity 应该用常量
         String token = JwtUtil.generatorToken(passengerPhone, IdentityConstant.PASSENGER_IDENTITY);
+        //将token传入redis中
+        String tokenKey=RedisPrefixUtils.generatorTokenKey(passengerPhone,IdentityConstant.PASSENGER_IDENTITY);
+        stringRedisTemplate.opsForValue().set(tokenKey,token,30,TimeUnit.DAYS);
         //响应token
         TokenResponse tokenResponse=new TokenResponse();
         tokenResponse.setToken(token);
@@ -94,13 +99,5 @@ public class VerificationCodeService {
 
     }
 
-    /**
-     * 根据手机生成 key
-     * @param passengerPhone
-     * @return
-     */
-    public String passengerKeyByPhone(String passengerPhone){
-        return  verificationCodePrefix+passengerPhone;
-    }
 
 }

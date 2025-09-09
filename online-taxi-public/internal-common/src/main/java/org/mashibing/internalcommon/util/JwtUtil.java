@@ -5,6 +5,7 @@ import com.auth0.jwt.JWTCreator;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.auth0.jwt.interfaces.JWTVerifier;
 import org.mashibing.internalcommon.dto.TokenResult;
 
 import java.util.Calendar;
@@ -37,12 +38,10 @@ public class JwtUtil {
         map.put(JWT_KEY_PHONE,passengerPhone);
         map.put(JWT_KEY_IDENTITY,identity);
 
-
-
         //token过期时间
-        Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.DATE,1);
-        Date date= calendar.getTime();
+//        Calendar calendar = Calendar.getInstance();
+//        calendar.add(Calendar.DATE,1);
+//        Date date= calendar.getTime();
 
         JWTCreator.Builder builder= JWT.create();
 
@@ -51,7 +50,7 @@ public class JwtUtil {
             builder.withClaim(k,v);
         });
         //整合过期时间
-        builder.withExpiresAt(date);
+        //builder.withExpiresAt(date);
 
         String sign = builder.sign(Algorithm.HMAC256(SIGN));
 
@@ -61,9 +60,17 @@ public class JwtUtil {
 
     //解析token
 public static TokenResult  parseToken(String token) {
-    DecodedJWT verify = JWT.require(Algorithm.HMAC256(SIGN)).build().verify(token);
-    String phone = verify.getClaim(JWT_KEY_PHONE).toString();
-    String identity = verify.getClaim(JWT_KEY_IDENTITY).toString();
+    Algorithm algorithm = Algorithm.HMAC256(SIGN); // 确保与签发时的 secret 和算法一致
+    JWTVerifier verifier = JWT.require(algorithm)
+            // .withIssuer("your-issuer")       // 如签发时有 issuer/audience，这里也要校验
+            // .withAudience("your-aud")
+            .acceptLeeway(5)                    // 时钟偏差容忍 5 秒（可选）
+            .build();
+
+    DecodedJWT jwt = verifier.verify(token);
+    //DecodedJWT verify = JWT.require(Algorithm.HMAC256(SIGN)).build().verify(token);
+    String phone = jwt.getClaim(JWT_KEY_PHONE).asString();
+    String identity = jwt.getClaim(JWT_KEY_IDENTITY).asString();
 
     TokenResult tokenResult=new TokenResult();
     tokenResult.setPhone(phone);
