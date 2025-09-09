@@ -5,10 +5,12 @@ import com.mashibing.apipassenger.remote.ServicePassengerUserClient;
 import com.mashibing.apipassenger.remote.ServiceVerificationCodeClient;
 import net.sf.json.JSONObject;
 import org.mashibing.internalcommon.constant.CommonStatusEnum;
+import org.mashibing.internalcommon.constant.IdentityConstant;
 import org.mashibing.internalcommon.dto.ResponseResult;
 import org.mashibing.internalcommon.request.VerificationCodeDTO;
 import org.mashibing.internalcommon.response.NumberCodeResponse;
 import org.mashibing.internalcommon.response.TokenResponse;
+import org.mashibing.internalcommon.util.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
@@ -82,11 +84,12 @@ public class VerificationCodeService {
         verificationCodeDTO.setPassengerPhone(passengerPhone);
         servicePassengerUserClient.loginOrRegister(verificationCodeDTO);
 
-        System.out.println("颁发令牌");
-
+       //"颁发令牌" identity 应该用常量
+        String token = JwtUtil.generatorToken(passengerPhone, IdentityConstant.PASSENGER_IDENTITY);
         //响应token
         TokenResponse tokenResponse=new TokenResponse();
-        tokenResponse.setToken("Token Value");
+        tokenResponse.setToken(token);
+        System.out.println(token);
         return ResponseResult.success(tokenResponse);
 
     }

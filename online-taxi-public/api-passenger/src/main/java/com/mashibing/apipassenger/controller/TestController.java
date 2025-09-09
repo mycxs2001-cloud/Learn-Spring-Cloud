@@ -1,5 +1,7 @@
 package com.mashibing.apipassenger.controller;
 
+import org.mashibing.internalcommon.dto.ResponseResult;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -16,4 +18,24 @@ public class TestController {
     public String test(){
         return "test";
     }
+
+    /**
+     * 需要Token
+     * @return
+     */
+    @GetMapping("/authTest")
+    public ResponseResult authTest(){
+        return ResponseResult.success("authTest");
+    }
+
+
+    /**
+     * 没有Token也能正常返回
+     * @return
+     */
+    @GetMapping("/noauthTest")
+    public ResponseResult noauthTest(){
+        return ResponseResult.success("noauthTest");
+    }
+
 }
