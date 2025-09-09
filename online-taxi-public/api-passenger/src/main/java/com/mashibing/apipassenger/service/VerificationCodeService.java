@@ -1,10 +1,12 @@
 package com.mashibing.apipassenger.service;
 
 import com.alibaba.cloud.commons.lang.StringUtils;
+import com.mashibing.apipassenger.remote.ServicePassengerUserClient;
 import com.mashibing.apipassenger.remote.ServiceVerificationCodeClient;
 import net.sf.json.JSONObject;
 import org.mashibing.internalcommon.constant.CommonStatusEnum;
 import org.mashibing.internalcommon.dto.ResponseResult;
+import org.mashibing.internalcommon.request.VerificationCodeDTO;
 import org.mashibing.internalcommon.response.NumberCodeResponse;
 import org.mashibing.internalcommon.response.TokenResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +27,9 @@ public class VerificationCodeService {
 
     @Autowired
     private ServiceVerificationCodeClient serviceVerificationCodeClient;
+
+    @Autowired
+    private ServicePassengerUserClient servicePassengerUserClient;
 
     @Autowired
     private StringRedisTemplate stringRedisTemplate;
@@ -65,14 +70,18 @@ public class VerificationCodeService {
 
         System.out.println("redis 中的 value :"+redisKey);
 
+        System.out.println("校验验证码");
         if (StringUtils.isBlank( redisKey)) {
             return ResponseResult.fail(CommonStatusEnum.VERIFICATION_ERROR.getCode(), CommonStatusEnum.VERIFICATION_ERROR.getValue(),redisKey);
         }
         if (!verificationCode.trim().equals(redisKey.trim())) {
             return ResponseResult.fail(CommonStatusEnum.VERIFICATION_ERROR.getCode(), CommonStatusEnum.VERIFICATION_ERROR.getValue(),redisKey);
         }
-        System.out.println("校验验证码");
         System.out.println("判断原来是否有用户");
+        VerificationCodeDTO verificationCodeDTO=new VerificationCodeDTO();
+        verificationCodeDTO.setPassengerPhone(passengerPhone);
+        servicePassengerUserClient.loginOrRegister(verificationCodeDTO);
+
         System.out.println("颁发令牌");
 
         //响应token
