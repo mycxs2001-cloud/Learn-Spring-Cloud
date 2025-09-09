@@ -98,7 +98,7 @@ public class VerificationCodeService {
 
         //将refReshTokenKey传入redis中
         String refReshTokenKey=RedisPrefixUtils.generatorTokenKey(passengerPhone,IdentityConstant.PASSENGER_IDENTITY,TokenConstant.REFRESH_TOKEN_TYPE);
-        stringRedisTemplate.opsForValue().set(refReshTokenKey,refReshTokenKey,31,TimeUnit.DAYS);
+        stringRedisTemplate.opsForValue().set(refReshTokenKey,refreshToken,31,TimeUnit.DAYS);
 
 
         //响应token

@@ -15,18 +15,20 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class InterceptorConfig implements WebMvcConfigurer {
 
     @Bean
-    public JwtInterceptor jwtInterceptor(){
+    public JwtInterceptor jwtInterceptor() {
         return new JwtInterceptor();
     }
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(jwtInterceptor())
-        //拦截的路径
+                //拦截的路径
                 .addPathPatterns("/**")
-        //不拦截的路径
+                //不拦截的路径
                 .excludePathPatterns("/noauthTest")
                 .excludePathPatterns("/verification-code-check")
-                .excludePathPatterns("/verification-code");
+                .excludePathPatterns("/verification-code")
+                .excludePathPatterns("/token-refresh")
+        ;
     }
 }

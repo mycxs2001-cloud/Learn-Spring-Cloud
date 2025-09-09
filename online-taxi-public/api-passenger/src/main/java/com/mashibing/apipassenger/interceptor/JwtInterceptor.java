@@ -82,14 +82,9 @@ public class JwtInterceptor implements HandlerInterceptor {
             String identity = tokenResult.getIdentity();
             String tokenKey = RedisPrefixUtils.generatorTokenKey(phone, identity, TokenConstant.ACCESS_TOKEN_TYPE);
             String tokenRedis = stringRedisTemplate.opsForValue().get(tokenKey);
-            if (StringUtils.isBlank(tokenRedis)) {//判断是否为空
+            if (StringUtils.isBlank(tokenRedis) || !token.trim().equals(tokenRedis.trim())) {//判断是否为空
                 writeJson(response, 401, ResponseResult.fail("token error"));
                 return false;
-            }else{
-                if (!token.trim().equals(tokenRedis.trim())){
-                    writeJson(response, 401, ResponseResult.fail("token error"));
-                    return false;
-                }
             }
             return true;               // 校验通过，放行
         } catch (com.auth0.jwt.exceptions.SignatureVerificationException e) {

@@ -6,6 +6,7 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.auth0.jwt.interfaces.JWTVerifier;
+import org.mashibing.internalcommon.dto.ResponseResult;
 import org.mashibing.internalcommon.dto.TokenResult;
 
 import java.util.Calendar;
@@ -33,16 +34,16 @@ public class JwtUtil {
 
     private static final String JWT_TOKEN_TYPE = "tokenType";
 
+    private static final String JWT_TOKEN_TIME = "tokenTime";
+
     //生成token
     public static String generatorToken(String passengerPhone, String identity, String tokenType) {
         Map<String, String> map = new HashMap<>();
         map.put(JWT_KEY_PHONE, passengerPhone);
         map.put(JWT_KEY_IDENTITY, identity);
         map.put(JWT_TOKEN_TYPE, tokenType);
-        //token过期时间
-//        Calendar calendar = Calendar.getInstance();
-//        calendar.add(Calendar.DATE,1);
-//        Date date= calendar.getTime();
+        //防止每次生成Token重复
+        map.put(JWT_TOKEN_TIME,Calendar.getInstance().getTime().toString());
 
         JWTCreator.Builder builder = JWT.create();
 
@@ -79,9 +80,26 @@ public class JwtUtil {
         return tokenResult;
     }
 
+
+    /**
+     * 校验token 主要判断token是否异常
+     *
+     * @param token
+     * @return
+     */
+    public static TokenResult checkToken(String token) {
+        TokenResult tokenResult = null;
+        try {
+            tokenResult = JwtUtil.parseToken(token); // 你的解析方法，注意用 asString() 取 claim
+        } catch (Exception e) {
+
+        }
+        return tokenResult;
+    }
+
     public static void main(String[] args) {
 
-        String s = generatorToken("15573558065", "1","access");
+        String s = generatorToken("15573558065", "1", "access");
         System.out.println("生成token :" + s);
 
         System.out.println("解析-----------");
