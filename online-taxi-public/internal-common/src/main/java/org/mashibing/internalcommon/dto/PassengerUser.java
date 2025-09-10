@@ -1,4 +1,4 @@
-package com.mashibing.servicepassengeruser.dto;
+package org.mashibing.internalcommon.dto;
 
 import lombok.Data;
 
@@ -21,6 +21,6 @@ public class PassengerUser {
     private int state;//状态 1启用 0 关闭
     private LocalDateTime gmpCreate; //创建时间
     private LocalDateTime gmpModified;//更新时间
-
+    private String profilePhoto;//个人资料
 
 }

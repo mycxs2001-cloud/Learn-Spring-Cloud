@@ -1,7 +1,8 @@
 package com.mashibing.servicepassengeruser.service;
 
-import com.mashibing.servicepassengeruser.dto.PassengerUser;
 import com.mashibing.servicepassengeruser.mapper.PassengerUserMapper;
+import org.mashibing.internalcommon.constant.CommonStatusEnum;
+import org.mashibing.internalcommon.dto.PassengerUser;
 import org.mashibing.internalcommon.dto.ResponseResult;
 import org.mashibing.internalcommon.request.VerificationCodeDTO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,12 +27,12 @@ public class UserService {
     @Autowired
     private PassengerUserMapper passengerUserMapper;
 
-    public ResponseResult loginOrRegister(String passGengerPhone) {
+    public ResponseResult loginOrRegister(String passengerPhone) {
 
-        System.out.println("user Service 呗调用 手机号:" + passGengerPhone);
+        System.out.println("user Service 呗调用 手机号:" + passengerPhone);
         //根据手机号查询用户信息
         Map<String, Object> map = new HashMap<>();
-        map.put("passenger_phone", passGengerPhone);
+        map.put("passenger_phone", passengerPhone);
         List<PassengerUser> passengerUsers = passengerUserMapper.selectByMap(map);
 
         //判断用户信息是否存在
@@ -39,7 +40,7 @@ public class UserService {
             //如果没有用户就新增
             PassengerUser passengerUser = new PassengerUser();
             passengerUser.setPassengerName("张三");
-            passengerUser.setPassengerPhone(passGengerPhone);
+            passengerUser.setPassengerPhone(passengerPhone);
             passengerUser.setPassengerGender(1);
             passengerUser.setState(0);
 
@@ -54,6 +55,21 @@ public class UserService {
         //如果不存在,插入数据
 
         return ResponseResult.success();
+    }
+
+    public ResponseResult getUserByPhone(String passengerPhone){
+        System.out.println("user Service 呗调用 手机号:" + passengerPhone);
+        //根据手机号查询用户信息
+        Map<String, Object> map = new HashMap<>();
+        map.put("passenger_phone", passengerPhone);
+        List<PassengerUser> passengerUsers = passengerUserMapper.selectByMap(map);
+
+        if (passengerUsers.size()==0) {
+            return ResponseResult.fail(CommonStatusEnum.USER_NOT_EXISTS.getCode(),CommonStatusEnum.USER_NOT_EXISTS.getValue());
+        }else {
+            PassengerUser passengerUser = passengerUsers.get(0);
+            return ResponseResult.success(passengerUser);
+        }
     }
 
 }

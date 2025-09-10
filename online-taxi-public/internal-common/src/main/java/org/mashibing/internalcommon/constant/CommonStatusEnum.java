@@ -11,8 +11,15 @@ import lombok.Getter;
  */
 public enum CommonStatusEnum {
 
+    /**
+     * 验证码不正确
+     */
     VERIFICATION_ERROR(1099, "验证码不正确"),
 
+    /**
+     * 用户不存在
+     */
+    USER_NOT_EXISTS(1200, "用户不存在"),
     /**
      * Token不正确
      */
