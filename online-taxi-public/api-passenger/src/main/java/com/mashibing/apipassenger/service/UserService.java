@@ -1,10 +1,12 @@
 package com.mashibing.apipassenger.service;
 
+import com.mashibing.apipassenger.remote.ServicePassengerUserClient;
 import lombok.extern.slf4j.Slf4j;
 import org.mashibing.internalcommon.constant.CommonStatusEnum;
 import org.mashibing.internalcommon.dto.PassengerUser;
 import org.mashibing.internalcommon.dto.ResponseResult;
 import org.mashibing.internalcommon.dto.TokenResult;
+import org.mashibing.internalcommon.request.VerificationCodeDTO;
 import org.mashibing.internalcommon.util.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -23,6 +25,9 @@ public class UserService {
     @Autowired
     private StringRedisTemplate stringRedisTemplate;
 
+    @Autowired
+    private ServicePassengerUserClient servicePassengerUserClient;
+
     public ResponseResult getUserByAccessToken(String accessToken){
           log.info("request accessToken :"+accessToken);
         //解析refresh
@@ -34,14 +39,9 @@ public class UserService {
         String phone = tokenResult.getPhone();
         String identity = tokenResult.getIdentity();
 
-
-        PassengerUser passengerUser=new PassengerUser();
-        passengerUser.setPassengerName("张三");
-        passengerUser.setProfilePhoto("不知道");
-        passengerUser.setPassengerGender(1);
-        passengerUser.setPassengerPhone(phone);
+        ResponseResult<PassengerUser> userByPhone = servicePassengerUserClient.getUserByPhone(phone);
 
 
-        return ResponseResult.success(passengerUser);
+        return ResponseResult.success(userByPhone.getData());
     }
 }

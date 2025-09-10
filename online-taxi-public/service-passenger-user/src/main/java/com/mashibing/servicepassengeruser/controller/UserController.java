@@ -4,10 +4,7 @@ import com.mashibing.servicepassengeruser.service.UserService;
 import org.mashibing.internalcommon.dto.ResponseResult;
 import org.mashibing.internalcommon.request.VerificationCodeDTO;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * @version: java version 1.8
@@ -29,9 +26,9 @@ public ResponseResult loginOrRegister(@RequestBody VerificationCodeDTO verificat
     }
 
 
-    @GetMapping("/user/")
-    public ResponseResult getUser(@RequestBody VerificationCodeDTO verificationCodeDTO) {
-        String passengerPhone = verificationCodeDTO.getPassengerPhone();
-        return userService.getUserByPhone(passengerPhone);
+    @GetMapping("/user/{phone}")
+    public ResponseResult getUser(@PathVariable("phone") String phone) {
+
+        return userService.getUserByPhone(phone);
     }
 }
